@@ -18,3 +18,16 @@ background-color:#525252;
 .threadname, .forumtitle > a {
 color:#dadada
 }
+
+.pagnation.threadpagnation A.page.is-active, .pagnation.postpagnation A.page.is-active {
+background-color: #943a3a;
+}
+
+html {
+background-image: repeating-linear-gradient(45deg, #222, #202020 8px, #252525 8px, #272727 16px);
+}
+
+.container {
+padding:4px;
+background-color:#2f3233;
+}
