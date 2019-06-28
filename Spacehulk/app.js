@@ -1,17 +1,66 @@
-// render() {
-  // const elements = ['one', 'two', 'three'];
+var app = angular.module("spacehulk", ['ui.router']);
 
-  // const items = []
+app.config(function($stateProvider) {
+ 
+	var portal = {
+		name: 'portal',
+		url: '/'
+	}
+	var weapons = {
+		name: 'weapons',
+		url: '/weapons'
+	}
+	var weapon = {
+		name: 'weapon',
+		url: '/weapon/:weaponName'
+	}
+	var items = {
+		name: 'items',
+		url: '/items'
+	}
+	var item = {
+		name: 'item',
+		url: '/item/:itemName'
+	}
+	var squads = {
+		name: 'squads',
+		url: '/squads'
+	}
+	var	squad = {
+		name: 'squad',
+		url: '/squad/:squadId'
+	}
+	var	squadCreator = {
+		name: 'squadCreator',
+		url: '/squadCreator'
+	}
+  $stateProvider.state(portal);
+  $stateProvider.state(weapons);
+  $stateProvider.state(weapon);
+  $stateProvider.state(items);
+  $stateProvider.state(item);
+  $stateProvider.state(squads);
+  $stateProvider.state(squad);
+  $stateProvider.state(squadCreator);
+});
 
-  // for (const [index, value] of elements.entries()) {
-    // items.push(<li key={index}>{value}</li>)
-  // }
-
-  // return (
-    // <div>
-      // {items}
-    // </div>
-  // )
-// }
-const element = <h1>Hello React!</h1>
-ReactDOM.render(element, document.getElementById('root'));
+app.controller("PageController", ["$scope", "$state", function($scope, $state) {
+	$scope.$state = $state;
+	
+	$scope.weapons = [
+		weaponBolter,
+		weaponBoltPistol,
+		weaponPlasmaPistol,
+		weaponPlasmaGun,
+		weaponGravPistol,
+		weaponGravGun,
+		weaponMelta,
+		weaponGrenade,
+	];
+	$scope.items = [
+		itemSpecialAmmo,
+		itemRelic,
+		itemPuritySeal,
+		itemStims,
+	];
+}]);
