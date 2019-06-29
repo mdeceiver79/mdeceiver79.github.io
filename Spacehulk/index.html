@@ -6,64 +6,52 @@
 		<meta name="theme-color" content="#000000">
 		<title>Spacehulk</title>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 		<script src="https://unpkg.com/@uirouter/angularjs@1.0.22/release/angular-ui-router.min.js"></script>
+		<script src="ui-bootstrap-2.5.0.min.js"></script>
 		<script src="spacehulk.js"></script>
-		<style>.active { color: red; font-weight: bold; }</style>
+		<style>
+		.custom-fluid-wrapper {margin: 0 auto; max-width:1024px;}
+		</style>
+		
 	</head>
 	<body ng-app="spacehulk">
 		<noscript>
 			You need to enable JavaScript to run this app.
 		</noscript>
 		<div ng-controller="PageController">
-			<!--
-				<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
-					<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<a class="navbar-brand" href="#">Navbar</a>
-
-					<div>
-						<ul class="navbar-nav">
-							<li class="nav-item active">
-								<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Link</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link disabled" href="#">Disabled</a>
-							</li>
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-								<div class="dropdown-menu" aria-labelledby="dropdown01">
-									<a class="dropdown-item" href="#">Action</a>
-									<a class="dropdown-item" href="#">Another action</a>
-									<a class="dropdown-item" href="#">Something else here</a>
-								</div>
-							</li>
-						</ul>
-						<form class="form-inline my-2 my-lg-0">
-							<input class="form-control mr-sm-2" type="text" placeholder="Search">
-							<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-						</form>
-						</div>
-				</nav>
-	-->
-				<!-- Main jumbotron for a primary marketing message or call to action -->
-			<div ng-contextual-link>test1 noodle dorf [[weapon:bolter]] is the best [[npc:rooter]].</div>
-			<div contextual-link>test2</div>
-			<div ng-contextual-link>test3</div>
-			<div ng-contextual-link>test4</div>
+			<nav class="navbar navbar-expand-sm bg-light navbar-light">
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link" ui-sref="portal" ui-sref-active="active">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" ui-sref="squad" ui-sref-active="active">Squad</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" ui-sref="weapons" ui-sref-active="active">Weapons</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" ui-sref="items" ui-sref-active="active">Items</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" ui-sref="npcs" ui-sref-active="active">Npcs</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" ui-sref="pskers" ui-sref-active="active">Psykers</a>
+					</li>
+				</ul>
+			</nav>
 			<div ng-show="$state.current.name == 'portal'">
 				<div class="jumbotron">
-					<div class="container">
+					<div class="custom-fluid-wrapper">
 						<h1 class="display-3">Spacehulk</h1>
 						<p>This is a website to assist playing Spacehulk, specifically for weapons, items and special rules. You can also access a character creator (and squad creator).</p>
 						<p><a ui-sref="squadCreator" class="btn btn-primary btn-lg" href="#" role="button">Squad Creator &raquo;</a></p>
 					</div>
 				</div>
-				<div class="container">
+				<div class="container custom-fluid-wrapper">
 					<!-- Example row of columns -->
 					<div class="row">
 						<div class="col-md-4">
@@ -89,18 +77,66 @@
 					</footer>
 				</div> <!-- /container -->
 			</div>
-			<div ng-show="$state.current.name == 'weapons'">
+			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'weapons'" ng-controller="WeaponsController">
+				<br>
+				<h2>Weapons</h2>
+				<br>
+				Test
+				<br>
+				<br>
 				<table class="table table-striped">
 					<tr>
-						<th>Weapon</th>
-						<th>Type</th>
-						<th>AP Cost</th>
-						<th>Dice</th>
-						<th>Modifier</th>
-						<th>Range</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('name')">
+								Weapon
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'name' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'name' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'name'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('type')">
+								Type
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'type' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'type' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'type'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('apCost')">
+								AP Cost
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'apCost' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'apCost' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'apCost'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('dice')">
+								Dice
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'dice' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'dice' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'dice'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('modifier')">
+								Modifier
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'modifier' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'modifier' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'modifier'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('range')">
+								Range
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'range' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'range' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'range'"></span>
+							</a>
+						</th>
 						<th>Rules</th>
 					</tr>
-					<tr ng-repeat="weapon in weapons">
+					<tr ng-repeat="weapon in weapons | orderBy : sortBy : sortByReverse">
 						<td><a ui-sref="weapon({ weaponName: weapon.name })">{{weapon.name}}</a></td>
 						<td>{{weapon.type}}</td>
 						<td>{{weapon.apCost}}</td>
@@ -111,25 +147,117 @@
 					</tr>
 				</table>
 			</div>
-			<div ng-show="$state.current.name == 'items'">
+			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'items'" ng-controller="ItemsController">
+				<br>
+				<h2>Items</h2>
+				<br>
+				Test
+				<br>
+				<br>
 				<table class="table table-striped">
 					<tr>
-						<th>Item</th>
-						<th>Description</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('name')">
+								Item
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'name' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'name' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'name'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('description')">
+								Description
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'description' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'description' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'description'"></span>
+							</a>
+						</th>
 					</tr>
-					<tr ng-repeat="item in items">
-						<td><a ui-sref="item({ itemName: item.name })">{{item.name}}</td>
-						<td>{{item.description | nodo}}</td>
+					<tr ng-repeat="item in items | orderBy : sortBy : sortByReverse">
+						<td><a ui-sref="item({ itemName: item.name })">{{item.name}}</a></td>
+						<td>{{item.description}}</td>
 					</tr>
 				</table>
 			</div>
-				
-			<div>
-				<a ui-sref="portal" ui-sref-active="active">portal</a>
-				<a ui-sref="weapons" ui-sref-active="active">weapons</a>
-				<a ui-sref="items" ui-sref-active="active">items</a>
-				<a ui-sref="weapon({ id: 123 })" ui-sref-active="active">weapon 123</a>
+			
+			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'npcs'" ng-controller="NpcsController">
+				<br>
+				<h2>NPCs</h2>
+				<br>
+				Test
+				<br>
+				<br>
+				<table class="table table-striped" ng-show="layout == 'table'">
+					<tr>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('name')">
+								Name
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'name' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'name' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'name'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('faction')">
+								Faction
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'faction' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'faction' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'faction'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('ap')">
+								AP
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'ap' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'ap' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'ap'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('melee')">
+								Melee
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'melee' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'melee' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'melee'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('range')">
+								Range
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'range' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'range' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'range'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('rules')">
+								Rules
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'rules' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'rules' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'rules'"></span>
+							</a>
+						</th>
+					</tr>
+					<tr ng-repeat="npc in npcs | orderBy : sortBy : sortByReverse">
+						<td><a ui-sref="npc({ id: npc.name })">{{npc.name}}</a></td>
+						<td>{{npc.faction}}</td>
+						<td>{{npc.ap}}</td>
+						<td>{{npc.melee}}</td>
+						<td>{{npc.range}}</td>
+						<td>{{npc.rules}}</td>
+					</tr>
+				</table>
+				<div class="row" ng-show="layout == 'tiles'">
+					<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="npc in npcs">
+						<div>Name: {{npc.name}}</div>
+						<div>Faction: {{npc.faction}}</div>
+						<div>AP Cost: {{npc.apCost}}</div>
+						<div>Melee: {{npc.melee}}</div>
+						<div>Ranged: {{npc.ranged}}</div>
+					</div>
+				</div>
 			</div>
+			
 		</div>
 		<script src="app.js"></script>
 	</body>
