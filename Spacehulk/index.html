@@ -51,6 +51,10 @@
 				</nav>
 	-->
 				<!-- Main jumbotron for a primary marketing message or call to action -->
+			<div ng-contextual-link>test1 noodle dorf [[weapon:bolter]] is the best [[npc:rooter]].</div>
+			<div contextual-link>test2</div>
+			<div ng-contextual-link>test3</div>
+			<div ng-contextual-link>test4</div>
 			<div ng-show="$state.current.name == 'portal'">
 				<div class="jumbotron">
 					<div class="container">
@@ -115,7 +119,7 @@
 					</tr>
 					<tr ng-repeat="item in items">
 						<td><a ui-sref="item({ itemName: item.name })">{{item.name}}</td>
-						<td>{{item.description}}</td>
+						<td>{{item.description | nodo}}</td>
 					</tr>
 				</table>
 			</div>
@@ -124,7 +128,7 @@
 				<a ui-sref="portal" ui-sref-active="active">portal</a>
 				<a ui-sref="weapons" ui-sref-active="active">weapons</a>
 				<a ui-sref="items" ui-sref-active="active">items</a>
-				<a ui-sref="weapon({ weaponId: 123 })" ui-sref-active="active">weapon 123</a>
+				<a ui-sref="weapon({ id: 123 })" ui-sref-active="active">weapon 123</a>
 			</div>
 		</div>
 		<script src="app.js"></script>

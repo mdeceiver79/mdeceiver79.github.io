@@ -12,7 +12,7 @@ app.config(function($stateProvider) {
 	}
 	var weapon = {
 		name: 'weapon',
-		url: '/weapon/:weaponName'
+		url: '/weapon/:id'
 	}
 	var items = {
 		name: 'items',
@@ -20,7 +20,7 @@ app.config(function($stateProvider) {
 	}
 	var item = {
 		name: 'item',
-		url: '/item/:itemName'
+		url: '/item/:id'
 	}
 	var squads = {
 		name: 'squads',
@@ -28,7 +28,7 @@ app.config(function($stateProvider) {
 	}
 	var	squad = {
 		name: 'squad',
-		url: '/squad/:squadId'
+		url: '/squad/:id'
 	}
 	var	squadCreator = {
 		name: 'squadCreator',
@@ -64,3 +64,22 @@ app.controller("PageController", ["$scope", "$state", function($scope, $state) {
 		itemStims,
 	];
 }]);
+
+app.directive('ngContextualLink', function ($compile) {
+	return {
+		restrict: 'A',
+		link: function (scope, element, attrs) {
+			// first split the content up into pieces
+			var formattedContent = [];
+			var splitUpContent = element[0].innerHTML.split(/\[\[|\]\]/);
+			splitUpContent.forEach((phrase, index) => {
+				if (index % 2 == 0) return formattedContent.push(phrase); // we don't care about the evens
+				// so now we're dealing with the contexted things
+				var phraseParts = phrase.split(":");
+				formattedContent.push("<a ui-sref=\""+phraseParts[0]+"({id:'"+phraseParts[1]+"'})\">"+phraseParts[1]+"</a>");
+			});
+			element[0].innerHTML = formattedContent.join('');
+			$compile(element.contents())(scope);
+		}
+	};
+});

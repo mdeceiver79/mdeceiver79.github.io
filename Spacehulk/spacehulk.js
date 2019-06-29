@@ -37,7 +37,7 @@ class Item {
 	}
 }
 
-const itemSpecialAmmo = new Item("Special Ammunition", "Consume while shooting a bolter to make it auto kill a target.", true);
+const itemSpecialAmmo = new Item("Special Ammunition", "Consume while shooting a [[weapon:Bolter]] to make it auto kill a target.", true);
 const itemRelic = new Item("Holy Relic", "Consume at any time to reroll any dice.", true);
 const itemPuritySeal = new Item("Purity Seal", "Consume to reroll any attack.", true);
 const itemStims = new Item("Stims", "Consume to replenish AP to 4.", true);
