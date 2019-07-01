@@ -38,11 +38,21 @@ app.config(function($stateProvider) {
 		name: 'npcs',
 		url: '/npcs'
 	}
+	var rules = {
+		name: 'rules',
+		url: '/rules'
+	}
+	var rule = {
+		name: 'rule',
+		url: '/rule/:id'
+	}
   $stateProvider.state(portal);
   $stateProvider.state(weapons);
   $stateProvider.state(weapon);
   $stateProvider.state(items);
   $stateProvider.state(item);
+  $stateProvider.state(rules);
+  $stateProvider.state(rule);
   $stateProvider.state(squads);
   $stateProvider.state(squad);
   $stateProvider.state(squadCreator);
@@ -52,54 +62,52 @@ app.config(function($stateProvider) {
 app.controller("PageController", ["$scope", "$state", function($scope, $state) {
 	$scope.$state = $state;
 	
-	$scope.weapons = [
-		weaponBolter,
-		weaponBoltPistol,
-		weaponPlasmaPistol,
-		weaponPlasmaGun,
-		weaponGravPistol,
-		weaponGravGun,
-		weaponMelta,
-		weaponGrenade,
-	];
-	$scope.items = [
-		itemSpecialAmmo,
-		itemRelic,
-		itemPuritySeal,
-		itemStims,
-	];
-	$scope.npcs = [
-		{
-			name : "Purestrain",
-			faction : "Genestealer",
-			ap : 6,
-			melee : "3D6",
-			range : null,
-			rules : []
-		},
-		{
-			name : "Acolyte Hybrid",
-			faction : "Genestealer",
-			ap : 4,
-			melee : "2D6",
-			range : null,
-			rules : []
-		},
-		{
-			name : "Neophyte Hybrid",
-			faction : "Genestealer",
-			ap : 4,
-			melee : "1D6-2",
-			range : null,
-			rules : []
-		},
-		
-	];
+	$scope.weapons = WeaponRegistry.weapons;
+	$scope.items = ItemRegistry.items;
+	$scope.npcs = NpcRegistry.npcs;
 }]);
+
+app.directive("ngWeapon", function() {
+	return {
+		scope : { weapon: "=weapon" },
+		template : "<a class=\"ctooltip\" ui-sref=\"weapon({id:weapon.name})\">"
+			+"<span class=\"tooltiptext\">"
+				+"<div>{{weapon.name}} ({{weapon.apCost}}AP)</div>"
+				+"<div>{{weapon.dice}} ({{6-weapon.modifier}}+)</div>"
+				+"<div>{{weapon.rulesString}}</div>"
+			+"</span>"
+			+"{{weapon.name}}"
+			+"</a>"
+	};
+});
+
+app.directive("ngRule", function() {
+	return {
+		scope : { rule: "=rule" },
+		template : "<a class=\"ctooltip\" ui-sref=\"rule({id:rule.name})\">"
+			+"<span class=\"tooltiptext\">"
+				+"{{rule.description}}"
+			+"</span>"
+			+"{{rule.name}}"
+			+"</a>"
+	};
+});
+
+app.directive("ngItem", function() {
+	return {
+		scope : { item: "=item" },
+		template : "<a class=\"ctooltip\" ui-sref=\"item({id:item.name})\">"
+			+"<span class=\"tooltiptext\">"
+				+"{{item.description}}"
+			+"</span>"
+			+"{{item.name}}"
+			+"</a>"
+	};
+});
 
 app.controller("WeaponsController", ["$scope", function($scope) {
 	$scope.layout = "table";
-	$scope.filter = null;
+	$scope.filter = "";
 	$scope.sortBy = null;
 	$scope.sortByReverse = false;
 	$scope.changeSort = (sortby) => {
@@ -119,7 +127,7 @@ app.controller("WeaponsController", ["$scope", function($scope) {
 
 app.controller("ItemsController", ["$scope", function($scope) {
 	$scope.layout = "table";
-	$scope.filter = null;
+	$scope.filter = "";
 	$scope.sortBy = null;
 	$scope.sortByReverse = false;
 	$scope.changeSort = (sortby) => {
@@ -139,7 +147,7 @@ app.controller("ItemsController", ["$scope", function($scope) {
 
 app.controller("NpcsController", ["$scope", function($scope) {
 	$scope.layout = "table";
-	$scope.filter = null;
+	$scope.filter = "";
 	$scope.sortBy = null;
 	$scope.sortByReverse = false;
 	$scope.changeSort = (sortby) => {

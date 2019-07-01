@@ -5,15 +5,47 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="theme-color" content="#000000">
 		<title>Spacehulk</title>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">-->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
 		<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 		<script src="https://unpkg.com/@uirouter/angularjs@1.0.22/release/angular-ui-router.min.js"></script>
-		<script src="ui-bootstrap-2.5.0.min.js"></script>
 		<script src="spacehulk.js"></script>
 		<style>
 		.custom-fluid-wrapper {margin: 0 auto; max-width:1024px;}
 		</style>
+		<style>
+		
+		/* Tooltip container */
+		.ctooltip {
+		  position: relative;
+		  // display: inline-block;
+		  // border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+		}
+
+		/* Tooltip text */
+		.ctooltip .tooltiptext {
+		  visibility: hidden;
+		  width: 120px;
+		  background-color: #6c757d;
+		  color: #fff;
+		  text-align: center;
+		  padding: 5px 0;
+		  border-radius: .25rem;
+		  top: -30px;
+			left: 110%; 
+		 
+		  /* Position the tooltip text - see examples below! */
+		  position: absolute;
+		  z-index: 1;
+		}
+
+		/* Show the tooltip text when you mouse over the tooltip container */
+		.ctooltip:hover .tooltiptext {
+		  visibility: visible;
+		}
+		</style>
+
 		
 	</head>
 	<body ng-app="spacehulk">
@@ -22,7 +54,7 @@
 		</noscript>
 		<div ng-controller="PageController">
 			<nav class="navbar navbar-expand-sm bg-light navbar-light">
-				<ul class="navbar-nav">
+				<ul class="nav navbar-nav">
 					<li class="nav-item">
 						<a class="nav-link" ui-sref="portal" ui-sref-active="active">Home</a>
 					</li>
@@ -84,7 +116,7 @@
 				Test
 				<br>
 				<br>
-				<table class="table table-striped">
+				<table class="table table-striped table-hover">
 					<tr>
 						<th>
 							<a class="unstyled-link" ng-click="changeSort('name')">
@@ -141,9 +173,10 @@
 						<td>{{weapon.type}}</td>
 						<td>{{weapon.apCost}}</td>
 						<td>{{weapon.dice}}</td>
-						<td>{{weapon.modifierString}} ({{6-weapon.modifier}}+)</td>
+						<td ng-show="weapon.type !== 'Melee'">{{weapon.modifierString}} ({{6-weapon.modifier}}+)</td>
+						<td ng-show="weapon.type === 'Melee'">{{weapon.modifier}}</td>
 						<td>{{weapon.range}}</td>
-						<td>{{weapon.rulesString}}</td>
+						<td><span ng-repeat="rule in weapon.rules"><ng-rule rule="rule"></ng-rule>{{$last ? '' : ', '}}</span></td>
 					</tr>
 				</table>
 			</div>
@@ -154,7 +187,7 @@
 				Test
 				<br>
 				<br>
-				<table class="table table-striped">
+				<table class="table table-striped table-hover">
 					<tr>
 						<th>
 							<a class="unstyled-link" ng-click="changeSort('name')">
@@ -187,8 +220,16 @@
 				Test
 				<br>
 				<br>
-				<table class="table table-striped" ng-show="layout == 'table'">
+				<table class="table table-striped table-hover" ng-show="layout == 'table'">
 					<tr>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('faction')">
+								Faction
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'faction' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'faction' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'faction'"></span>
+							</a>
+						</th>
 						<th>
 							<a class="unstyled-link" ng-click="changeSort('name')">
 								Name
@@ -198,11 +239,11 @@
 							</a>
 						</th>
 						<th>
-							<a class="unstyled-link" ng-click="changeSort('faction')">
-								Faction
-								<span class="fa fa-sort-asc" ng-show="sortBy === 'faction' && sortByReverse === true"></span>
-								<span class="fa fa-sort-desc" ng-show="sortBy === 'faction' && sortByReverse === false"></span>
-								<span class="fa fa-sort" ng-show="sortBy !== 'faction'"></span>
+							<a class="unstyled-link" ng-click="changeSort('type')">
+								Type
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'type' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'type' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'type'"></span>
 							</a>
 						</th>
 						<th>
@@ -222,11 +263,11 @@
 							</a>
 						</th>
 						<th>
-							<a class="unstyled-link" ng-click="changeSort('range')">
-								Range
-								<span class="fa fa-sort-asc" ng-show="sortBy === 'range' && sortByReverse === true"></span>
-								<span class="fa fa-sort-desc" ng-show="sortBy === 'range' && sortByReverse === false"></span>
-								<span class="fa fa-sort" ng-show="sortBy !== 'range'"></span>
+							<a class="unstyled-link" ng-click="changeSort('weaponsString')">
+								Weapons
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'weaponsString' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'weaponsString' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'weaponsString'"></span>
 							</a>
 						</th>
 						<th>
@@ -238,22 +279,24 @@
 							</a>
 						</th>
 					</tr>
-					<tr ng-repeat="npc in npcs | orderBy : sortBy : sortByReverse">
-						<td><a ui-sref="npc({ id: npc.name })">{{npc.name}}</a></td>
+					<tr ng-repeat="npc in npcs | orderBy : sortBy : sortByReverse | filter : filter">
 						<td>{{npc.faction}}</td>
+						<td><a ui-sref="npc({ id: npc.name })">{{npc.name}}</a></td>
+						<td>{{npc.type}}</td>
 						<td>{{npc.ap}}</td>
 						<td>{{npc.melee}}</td>
-						<td>{{npc.range}}</td>
-						<td>{{npc.rules}}</td>
+						<td><span ng-repeat="weapon in npc.weapons"><ng-weapon weapon="weapon"></ng-weapon>{{$last ? '' : ', '}}</span></td>
+						<td><span ng-repeat="rule in npc.rules"><ng-rule rule="rule"></ng-rule>{{$last ? '' : ', '}}</span></td>
 					</tr>
 				</table>
 				<div class="row" ng-show="layout == 'tiles'">
 					<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="npc in npcs">
-						<div>Name: {{npc.name}}</div>
 						<div>Faction: {{npc.faction}}</div>
+						<div>Name: {{npc.name}}</div>
+						<div>Type: {{npc.type}}</div>
 						<div>AP Cost: {{npc.apCost}}</div>
 						<div>Melee: {{npc.melee}}</div>
-						<div>Ranged: {{npc.ranged}}</div>
+						<div>Weapons: {{npc.weaponsString}}</div>
 					</div>
 				</div>
 			</div>
