@@ -44,6 +44,9 @@
 		.ctooltip:hover .tooltiptext {
 		  visibility: visible;
 		}
+		footer span {
+			padding: 0 5px 20px 5px;
+		}
 		</style>
 
 		
@@ -72,6 +75,9 @@
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" ui-sref="pskers" ui-sref-active="active">Psykers</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" ui-sref="objects" ui-sref-active="active">Objects</a>
 					</li>
 				</ul>
 			</nav>
@@ -105,7 +111,7 @@
 					
 				</div> <!-- /container -->
 			</div>
-			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'weapons'" ng-controller="WeaponsController">
+			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'weapons'" ng-controller="TableController">
 				<br>
 				<h2>Weapons</h2>
 				<br>
@@ -165,7 +171,7 @@
 						<th>Rules</th>
 					</tr>
 					<tr ng-repeat="weapon in weapons | orderBy : sortBy : sortByReverse">
-						<td><a ui-sref="weapon({ weaponName: weapon.name })">{{weapon.name}}</a></td>
+						<td><a ui-sref="weapon({ id: weapon.name })">{{weapon.name}}</a></td>
 						<td>{{weapon.type}}</td>
 						<td>{{weapon.apCost}}</td>
 						<td>{{weapon.dice}}</td>
@@ -176,7 +182,7 @@
 					</tr>
 				</table>
 			</div>
-			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'items'" ng-controller="ItemsController">
+			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'items'" ng-controller="TableController">
 				<br>
 				<h2>Items</h2>
 				<br>
@@ -200,6 +206,14 @@
 							</a>
 						</th>
 						<th>
+							<a class="unstyled-link" ng-click="changeSort('consumable')">
+								Consumable
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'consumable' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'consumable' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'consumable'"></span>
+							</a>
+						</th>
+						<th>
 							<a class="unstyled-link" ng-click="changeSort('description')">
 								Description
 								<span class="fa fa-sort-asc" ng-show="sortBy === 'description' && sortByReverse === true"></span>
@@ -209,8 +223,47 @@
 						</th>
 					</tr>
 					<tr ng-repeat="item in items | orderBy : sortBy : sortByReverse">
-						<td><a ui-sref="item({ itemName: item.name })">{{item.name}}</a></td>
-						<td>{{item.description}}</td>
+						<td><a ui-sref="item({ id: item.name })">{{item.name}}</a></td>
+						<td>{{item.consumable}}</td>
+						<td><span ng-contextual-link="item.description"></span></td>
+					</tr>
+				</table>
+			</div>
+			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'objects'" ng-controller="TableController">
+				<br>
+				<h2>Objects</h2>
+				<br>
+				Test
+				<br>
+				<br>
+				<form>
+					<div class="form-group">
+						<label>Filter</label>
+						<input type="text" class="form-control" placeholder="Search term" ng-model="filter">
+					</div>
+				</form>
+				<table class="table table-striped table-hover">
+					<tr>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('name')">
+								Object
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'name' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'name' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'name'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('description')">
+								Description
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'description' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'description' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'description'"></span>
+							</a>
+						</th>
+					</tr>
+					<tr ng-repeat="object in objects | orderBy : sortBy : sortByReverse">
+						<td><a ui-sref="object({ id: object.name })">{{object.name}}</a></td>
+						<td><span ng-contextual-link="object.description"></span></td>
 					</tr>
 				</table>
 			</div>
@@ -241,19 +294,19 @@
 							</span>
 						</th>
 						<th>
-							<a class="unstyled-link" ng-click="changeSort('faction')">
-								Faction
-								<span class="fa fa-sort-asc" ng-show="sortBy === 'faction' && sortByReverse === true"></span>
-								<span class="fa fa-sort-desc" ng-show="sortBy === 'faction' && sortByReverse === false"></span>
-								<span class="fa fa-sort" ng-show="sortBy !== 'faction'"></span>
-							</a>
-						</th>
-						<th>
 							<a class="unstyled-link" ng-click="changeSort('name')">
 								Name
 								<span class="fa fa-sort-asc" ng-show="sortBy === 'name' && sortByReverse === true"></span>
 								<span class="fa fa-sort-desc" ng-show="sortBy === 'name' && sortByReverse === false"></span>
 								<span class="fa fa-sort" ng-show="sortBy !== 'name'"></span>
+							</a>
+						</th>
+						<th>
+							<a class="unstyled-link" ng-click="changeSort('faction')">
+								Faction
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'faction' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'faction' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'faction'"></span>
 							</a>
 						</th>
 						<th>
@@ -273,11 +326,11 @@
 							</a>
 						</th>
 						<th>
-							<a class="unstyled-link" ng-click="changeSort('melee')">
-								Melee
-								<span class="fa fa-sort-asc" ng-show="sortBy === 'melee' && sortByReverse === true"></span>
-								<span class="fa fa-sort-desc" ng-show="sortBy === 'melee' && sortByReverse === false"></span>
-								<span class="fa fa-sort" ng-show="sortBy !== 'melee'"></span>
+							<a class="unstyled-link" ng-click="changeSort('ca')">
+								Combat Ability
+								<span class="fa fa-sort-asc" ng-show="sortBy === 'ca' && sortByReverse === true"></span>
+								<span class="fa fa-sort-desc" ng-show="sortBy === 'ca' && sortByReverse === false"></span>
+								<span class="fa fa-sort" ng-show="sortBy !== 'ca'"></span>
 							</a>
 						</th>
 						<th>
@@ -299,15 +352,15 @@
 					</tr>
 					<tr ng-repeat="npc in npcs | orderBy : sortBy : sortByReverse | filter : filter">
 						<td>
-							<a class="unstyled-link" ng-click="npc.$starred = !npc.$starred">
+							<a class="unstyled-link" ng-click="npc.$starred = !npc.$starred" >
 								<span class="fa fa-star" ng-class="{'text-warning':npc.$starred, 'text-secondary':!npc.$starred}"></span>
-							<a>
+							</a>
 						</td>
-						<td style="background: {{npc.faction.color}}">{{npc.faction.name}}</td>
 						<td><a ui-sref="npc({ id: npc.name })">{{npc.name}}</a></td>
+						<td style="background: {{npc.faction.color}}">{{npc.faction.name}}</td>
 						<td>{{npc.type}}</td>
 						<td>{{npc.ap}}</td>
-						<td>{{npc.melee}}</td>
+						<td>{{npc.ca}}</td>
 						<td><span ng-repeat="weapon in npc.weapons"><ng-weapon weapon="weapon"></ng-weapon>{{$last ? '' : ', '}}</span></td>
 						<td><span ng-repeat="rule in npc.rules"><ng-rule rule="rule"></ng-rule>{{$last ? '' : ', '}}</span></td>
 					</tr>
@@ -323,11 +376,101 @@
 					</div>
 				</div>
 			</div>
+			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'links'">
+				<br>
+				<h2>Links</h2>
+				<br>
+				Test
+				<br>
+				<br>
+				<a href="https://drive.google.com/file/d/0BzUqoUE_JiOua1NGUXo5c0hwWGs/view">https://drive.google.com/file/d/0BzUqoUE_JiOua1NGUXo5c0hwWGs/view</a>
+				<a href="https://bowlivestorage.blob.core.windows.net/beastsofwarlivesite/2018/10/54362492-68952044-Genestealer-CultistHybrids_Rules_for_Space_Hulk_3_and_4-5bce4e8f63025.pdf">https://bowlivestorage.blob.core.windows.net/beastsofwarlivesite/2018/10/54362492-68952044-Genestealer-CultistHybrids_Rules_for_Space_Hulk_3_and_4-5bce4e8f63025.pdf</a>
+				<a href="http://rumkin.com/reference/dnd/diestats.php">http://rumkin.com/reference/dnd/diestats.php</a>
+				<a href="http://spacehulk.barsoom.cc/ressurected/shbible/Space_Hulk_Bible_1st_edtion.pdf">http://spacehulk.barsoom.cc/ressurected/shbible/Space_Hulk_Bible_1st_edtion.pdf</a>
+				<a href="http://spacehulk.barsoom.cc/ressurected/eth/Marines.html">http://spacehulk.barsoom.cc/ressurected/eth/Marines.html</a>
+				<a href="https://boardgamegeek.com/thread/1540262/deathwatch-hybrids-space-hulk">https://boardgamegeek.com/thread/1540262/deathwatch-hybrids-space-hulk</a>
+			</div>
 			
-					<hr>
-					<footer>
-					<p>&copy; Nobody 2018</p>
-					</footer>
+			<div class="container custom-fluid-wrapper" ng-if="$state.current.name == 'weapon'" ng-controller="RegistryController">
+				<br>
+				<h2>{{subject.name}}</h2>
+				<br>
+				<div class="row">
+					<div class="col-md-4 col-lg-6">Type : {{subject.type}}</div>
+					<div class="col-md-4 col-lg-6">Cost to Fire: {{subject.apCost}}AP</div>
+					<div class="col-md-4 col-lg-6">Hit Dice: {{subject.dice}}</div>
+					<div class="col-md-4 col-lg-6">To hit: {{6-subject.modifier}}+</div>
+					<div class="col-md-4 col-lg-6" ng-show="subject.range">Range: {{subject.range}}</div>
+					<div class="col-md-6 col-lg-6">
+						<h6>Rules:</h6>
+						<table class="table">
+							<tr ng-repeat="rule in subject.rules">
+								<td><a ui-sref="rule({id:rule.name})">{{rule.name}}</a></td>
+								<td><span ng-contextual-link="rule.fullDescription"></span></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<br>
+				<br>
+			</div>
+			<div class="container custom-fluid-wrapper" ng-if="$state.current.name == 'item'" ng-controller="RegistryController">
+				<br>
+				<h2>{{subject.name}}</h2>
+				<h6 ng-show="subject.consumable">(Consumable)</h6>
+				<br>
+				<span ng-contextual-link="subject.description"></span>
+				<br>
+				<br>
+			</div>
+			<div class="container custom-fluid-wrapper" ng-if="$state.current.name == 'rule'" ng-controller="RegistryController">
+				<br>
+				<h2>{{subject.name}}</h2>
+				<br>
+				<span ng-contextual-link="subject.fullDescription"></span>
+				<br>
+				<br>
+			</div>
+			<div class="container custom-fluid-wrapper" ng-if="$state.current.name == 'object'" ng-controller="RegistryController">
+				<br>
+				<h2>{{subject.name}}</h2>
+				<br>
+				<span ng-contextual-link="subject.description"></span>
+				<div class="row">
+					<div class="col-md-4" ng-show="subject.destructible">Destructible: {{subject.destructible}}</div>
+					<div class="col-md-4" ng-show="subject.blocksLOS">Blocks Line of Sight</div>
+					<div class="col-md-4" ng-show="subject.blocksMovement">Blocks Movement</div>
+				</div>
+				<br>
+				<br>
+			</div>
+			<div class="container custom-fluid-wrapper" ng-if="$state.current.name == 'faction'" ng-controller="RegistryController">
+				<br>
+				<h2>{{subject.name}}</h2>
+				<br>
+				<div class="row">
+					<div class="col-lg-6">
+						<span ng-contextual-link="subject.description"></span>
+					</div>
+					<div class="col-lg-6">
+						<h6>Npcs:</h6>
+						<table class="table">
+							<tr ng-repeat="npc in npcs" ng-if="npc.faction.name == subject.name">
+								<td><a ui-sref="npc({id:npc.name})">{{npc.name}}</a></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<br>
+				<br>
+			</div>
+			
+			<hr>
+			<footer>
+				<span>&copy; Fulcrum {{date| date:'yyyy'}}</span>
+				<span><a ui-sref="about" class="unstyled-link">About</a></span>
+				<span><a ui-sref="links" class="unstyled-link">Links</a></span>
+			</footer>
 		</div>
 		<script src="app.js"></script>
 	</body>

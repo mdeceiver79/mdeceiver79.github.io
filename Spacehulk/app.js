@@ -1,7 +1,7 @@
 var app = angular.module("spacehulk", ['ui.router']);
 
-app.config(function($stateProvider) {
- 
+app.config(function($stateProvider, $sceProvider) {
+	$sceProvider.enabled(false);
 	var portal = {
 		name: 'portal',
 		url: '/'
@@ -21,6 +21,14 @@ app.config(function($stateProvider) {
 	var item = {
 		name: 'item',
 		url: '/item/:id'
+	}
+	var objects = {
+		name: 'objects',
+		url: '/objects'
+	}
+	var object = {
+		name: 'object',
+		url: '/object/:id'
 	}
 	var squads = {
 		name: 'squads',
@@ -46,25 +54,43 @@ app.config(function($stateProvider) {
 		name: 'rule',
 		url: '/rule/:id'
 	}
+	var factions = {
+		name: 'factions',
+		url: '/factions'
+	}
+	var faction = {
+		name: 'faction',
+		url: '/faction/:id'
+	}
+	var links = {
+		name: 'links',
+		url: '/links'
+	}
   $stateProvider.state(portal);
   $stateProvider.state(weapons);
   $stateProvider.state(weapon);
   $stateProvider.state(items);
   $stateProvider.state(item);
+  $stateProvider.state(object);
+  $stateProvider.state(objects);
   $stateProvider.state(rules);
   $stateProvider.state(rule);
   $stateProvider.state(squads);
   $stateProvider.state(squad);
+  $stateProvider.state(factions);
+  $stateProvider.state(faction);
   $stateProvider.state(squadCreator);
   $stateProvider.state(npcs);
+  $stateProvider.state(links);
 });
 
 app.controller("PageController", ["$scope", "$state", function($scope, $state) {
 	$scope.$state = $state;
-	
-	$scope.weapons = WeaponRegistry.weapons;
-	$scope.items = ItemRegistry.items;
-	$scope.npcs = NpcRegistry.npcs;
+	$scope.date = new Date();
+	$scope.weapons = Registry.weapons;
+	$scope.objects = Registry.objects;
+	$scope.items = Registry.items;
+	$scope.npcs = Registry.npcs;
 	$scope.npcs.forEach((npc) => {
 		npc.$starred = false;
 	});
@@ -108,7 +134,7 @@ app.directive("ngItem", function() {
 	};
 });
 
-app.controller("WeaponsController", ["$scope", function($scope) {
+app.controller("TableController", ["$scope", function($scope) {
 	$scope.layout = "table";
 	$scope.filter = "";
 	$scope.sortBy = null;
@@ -128,24 +154,17 @@ app.controller("WeaponsController", ["$scope", function($scope) {
 	};
 }]);
 
-app.controller("ItemsController", ["$scope", function($scope) {
-	$scope.layout = "table";
-	$scope.filter = "";
-	$scope.sortBy = null;
-	$scope.sortByReverse = false;
-	$scope.changeSort = (sortby) => {
-		if ($scope.sortBy === sortby) {
-			if (!$scope.sortByReverse) {
-				$scope.sortByReverse = true;
-			} else {
-				$scope.sortBy = null;
-				$scope.sortByReverse = false;
-			}
+app.controller("RegistryController", ["$scope", "$stateParams", "$state", function($scope, $stateParams, $state) {
+	$scope.$stateParams = $stateParams;
+	$scope.$watch("$stateParams.id", function() {
+		if ( Registry[$state.current.name] && Registry[$state.current.name][$stateParams.id] ) {
+			$scope.subject = Registry[$state.current.name][$stateParams.id];
 		} else {
-			$scope.sortBy = sortby;
-			$scope.sortByReverse = false;
+			$scope.subject = null;
 		}
-	};
+		console.log("$scope.subject", $scope.subject);
+	});
+	$scope.subject = null;
 }]);
 
 app.controller("NpcsController", ["$scope", function($scope) {
@@ -171,21 +190,24 @@ app.controller("NpcsController", ["$scope", function($scope) {
 	};
 }]);
 
-app.directive('ngContextualLink', function ($compile) {
+app.directive("ngContextualLink", function($compile) {
 	return {
+        replace: true,
 		restrict: 'A',
-		link: function (scope, element, attrs) {
-			// first split the content up into pieces
-			var formattedContent = [];
-			var splitUpContent = element[0].innerHTML.split(/\[\[|\]\]/);
-			splitUpContent.forEach((phrase, index) => {
-				if (index % 2 == 0) return formattedContent.push(phrase); // we don't care about the evens
-				// so now we're dealing with the contexted things
-				var phraseParts = phrase.split(":");
-				formattedContent.push("<a ui-sref=\""+phraseParts[0]+"({id:'"+phraseParts[1]+"'})\">"+phraseParts[1]+"</a>");
+		scope: { description: "=ngContextualLink" },
+		link: function( $scope, element, attrs ) {
+			$scope.$watch("$scope.description", function() {
+				var formattedContent = [];
+				var splitUpContent = ($scope.description || "").split(/\[\[|\]\]/);
+				splitUpContent.forEach((phrase, index) => {
+					if (index % 2 == 0) return formattedContent.push(phrase); // we don't care about the evens
+					// so now we're dealing with the contexted things
+					var phraseParts = phrase.split(":");
+					formattedContent.push("<a ui-sref=\""+phraseParts[0]+"({id:'"+phraseParts[1]+"'})\">"+phraseParts[1]+"</a>");
+				});
+				element[0].innerHTML = formattedContent.join("");
+				$compile(element.contents())($scope);
 			});
-			element[0].innerHTML = formattedContent.join('');
-			$compile(element.contents())(scope);
 		}
 	};
 });
