@@ -65,6 +65,9 @@ app.controller("PageController", ["$scope", "$state", function($scope, $state) {
 	$scope.weapons = WeaponRegistry.weapons;
 	$scope.items = ItemRegistry.items;
 	$scope.npcs = NpcRegistry.npcs;
+	$scope.npcs.forEach((npc) => {
+		npc.$starred = false;
+	});
 }]);
 
 app.directive("ngWeapon", function() {
@@ -148,15 +151,18 @@ app.controller("ItemsController", ["$scope", function($scope) {
 app.controller("NpcsController", ["$scope", function($scope) {
 	$scope.layout = "table";
 	$scope.filter = "";
-	$scope.sortBy = null;
+	$scope.sortBy = "faction";
 	$scope.sortByReverse = false;
+	$scope.sortByStar = () => {
+		$scope.sortBy = "$starred";
+		$scope.sortByReverse = true;
+	}
 	$scope.changeSort = (sortby) => {
 		if ($scope.sortBy === sortby) {
 			if (!$scope.sortByReverse) {
 				$scope.sortByReverse = true;
 			} else {
-				$scope.sortBy = null;
-				$scope.sortByReverse = false;
+				$scope.sortByStar();
 			}
 		} else {
 			$scope.sortBy = sortby;

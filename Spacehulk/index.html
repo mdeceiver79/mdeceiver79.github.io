@@ -30,7 +30,7 @@
 		  background-color: #6c757d;
 		  color: #fff;
 		  text-align: center;
-		  padding: 5px 0;
+		  padding: 5px 2px;
 		  border-radius: .25rem;
 		  top: -30px;
 			left: 110%; 
@@ -103,10 +103,6 @@
 						</div>
 					</div>
 					
-					<hr>
-					<footer>
-					<p>&copy; Nobody 2018</p>
-					</footer>
 				</div> <!-- /container -->
 			</div>
 			<div class="container custom-fluid-wrapper" ng-show="$state.current.name == 'weapons'" ng-controller="WeaponsController">
@@ -187,6 +183,12 @@
 				Test
 				<br>
 				<br>
+				<form>
+					<div class="form-group">
+						<label>Filter</label>
+						<input type="text" class="form-control" placeholder="Search term" ng-model="filter">
+					</div>
+				</form>
 				<table class="table table-striped table-hover">
 					<tr>
 						<th>
@@ -220,8 +222,24 @@
 				Test
 				<br>
 				<br>
+				<form>
+					<div class="form-group">
+						<label>Filter</label>
+						<input type="text" class="form-control" placeholder="Search term" ng-model="filter">
+					</div>
+				</form>
 				<table class="table table-striped table-hover" ng-show="layout == 'table'">
 					<tr>
+						<th>
+							<span style="width:32px; display:inline-block;">
+								<a class="unstyled-link" ng-click="sortByStar()">
+									<span class="fa fa-star" ng-class="{'text-warning':sortBy === '$starred'}"></span>
+									<!--<span class="fa fa-sort-asc" ng-show="sortBy === '$starred' && sortByReverse === true"></span>
+									<span class="fa fa-sort-desc" ng-show="sortBy === '$starred' && sortByReverse === false"></span>
+									<span class="fa fa-sort" ng-show="sortBy !== '$starred'"></span>-->
+								</a>
+							</span>
+						</th>
 						<th>
 							<a class="unstyled-link" ng-click="changeSort('faction')">
 								Faction
@@ -280,7 +298,12 @@
 						</th>
 					</tr>
 					<tr ng-repeat="npc in npcs | orderBy : sortBy : sortByReverse | filter : filter">
-						<td>{{npc.faction}}</td>
+						<td>
+							<a class="unstyled-link" ng-click="npc.$starred = !npc.$starred">
+								<span class="fa fa-star" ng-class="{'text-warning':npc.$starred, 'text-secondary':!npc.$starred}"></span>
+							<a>
+						</td>
+						<td style="background: {{npc.faction.color}}">{{npc.faction.name}}</td>
 						<td><a ui-sref="npc({ id: npc.name })">{{npc.name}}</a></td>
 						<td>{{npc.type}}</td>
 						<td>{{npc.ap}}</td>
@@ -301,6 +324,10 @@
 				</div>
 			</div>
 			
+					<hr>
+					<footer>
+					<p>&copy; Nobody 2018</p>
+					</footer>
 		</div>
 		<script src="app.js"></script>
 	</body>
