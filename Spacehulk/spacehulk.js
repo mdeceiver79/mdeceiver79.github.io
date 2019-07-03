@@ -14,14 +14,14 @@ const Registry = {
 	objects : [],
 	factions : [],
 	
-	addWeapon : function(name, type, apCost, dice, modifier, range, rules) {
-		var newWeapon = new Weapon(name, type, apCost, dice, modifier, range, rules);
+	addWeapon : function(name, description, type, apCost, dice, modifier, range, rules) {
+		var newWeapon = new Weapon(name, description,type, apCost, dice, modifier, range, rules);
 		this.weapons.push(newWeapon);
 		this.weapon[name] = newWeapon;
 		return newWeapon;
 	},
-	addNpc : function(name, type, faction, ap, ca, weapons, rules) {
-		var newNpc = new Npc(name, type, faction, ap, ca, weapons, rules);
+	addNpc : function(name, description, type, faction, ap, ca, weapons, rules) {
+		var newNpc = new Npc(name, description, type, faction, ap, ca, weapons, rules);
 		this.npcs.push(newNpc);
 		this.npc[name] = newNpc;
 		return newNpc;
@@ -78,8 +78,9 @@ class Rule {
 }
 
 class Npc {
-	constructor(name, type, faction, ap, ca, weapons, rules) {
+	constructor(name, description, type, faction, ap, ca, weapons, rules) {
 		this.name = name;
+		this.description = description;
 		this.type = type;
 		this.faction = faction;
 		this.ap = ap;
@@ -103,8 +104,9 @@ class Npc {
 }
 
 class Weapon {
-	constructor(name, type, apCost, dice, modifier, range, rules) {
+	constructor(name, description, type, apCost, dice, modifier, range, rules) {
 		this.name = name;
+		this.description = description;
 		this.type = type;
 		this.apCost = apCost;
 		this.dice = dice;
@@ -139,6 +141,8 @@ const itemSpecialAmmo = Registry.addItem("Special Ammunition", "Consume while sh
 const itemRelic = Registry.addItem("Holy Relic", "Consume at any time to reroll any dice.", true);
 const itemPuritySeal = Registry.addItem("Purity Seal", "Consume to reroll any attack.", true);
 const itemStims = Registry.addItem("Stims", "Consume to replenish AP to 4.", true);
+const itemCoolant = Registry.addItem("Coolant Circuit", "Consume to ignore a wound for Overloaded plasma.", true);
+const itemLighterArmour = Registry.addItem("Lighter Armour", "+1 AP (Passive)", false);
 
 const ruleSustainedFire = Registry.addRule("Sustained Fire", "+1 modifier for repeated shots", "+1 for each shot taken against a target");
 const ruleHotShot= Registry.addRule("Hot Shot", "While shooting spend 1ap to roll an extra dice.", "While shooting spend 1ap to roll an extra dice. (cumulative)");
@@ -166,51 +170,54 @@ const ruleFlakArmour = Registry.addRule("Flak Armour (-1)", "All shooting agains
 const ruleWeaknessFire = Registry.addRule("Weak Against Fire", "Flame based attacks kill this on 2+.", "Flame based attacks (Flamer, Fire Bomb) kill this on 2+.");
 const ruleLeap = Registry.addRule("Leap", "Spend 2AP to move up to 6 spaces.", "Spend 2AP to move up to 6 spaces in one action.");
 const ruleHeavyBlow = Registry.addRule("Heavy Blow", "Combat Ability is highest dice + lowest dice.", "Combat Ability is highest dice + lowest dice.");
+const ruleDaemon = Registry.addRule("Daemon", "This is a daemon.", "This is a daemon.");
+const rulePlagueWeapons = Registry.addRule("Plague Weapons", "Rolls of 6 in close combat wound the attacker, even if combat is lost.", "Rolls of 6 in close combat wound the attacker, even if combat is lost.");
 
-const weaponSmallArms = Registry.addWeapon("Small Arms", "Basic", 2, "1D6", 0, null, [ruleOverwatch]);
-const weaponBolter = Registry.addWeapon("Bolter", "Basic", 1, "2D6", 0, null, [ruleOverwatch, ruleSustainedFire]);
-const weaponLasgun = Registry.addWeapon("Lasgun", "Basic", 1, "1D6", 0, null, [ruleOverwatch, ruleHotShot]);
-// const weaponSpecialIssueLasgun = Registry.addWeapon("Special Issue Lasgun", "Basic", 1, "1D6", 2, null, []);
-const weaponFlamer = Registry.addWeapon("Flamer", "Special", 2, "1D6", 2, null, [ruleAreaOfEffect, rulePersistentEffect, ruleFlameBased]);
-// const weaponSniperRifle = Registry.addWeapon("Sniper Rifle", "Special", 2, "2D6", 0, null, [ruleSteadyAim]);
-const weaponPlasmaGun = Registry.addWeapon("Plasma Gun", "Special", 1, "3D6", 1, null, [ruleOverheats, ruleOverload]);
-// const weaponGravGun = Registry.addWeapon("Grav Gun", "Special", 1, "2D6", 0, null, [ruleGravgun]);
-const weaponMelta = Registry.addWeapon("Melta Gun", "Special", 2, "2D6", 2, 8, [ruleDoorbuster]);
-// const weaponAssaultCannon = Registry.addWeapon("Assault Cannon", "Special", 1, "3D6", 0, null, [ruleSustainedFire]);
-// const weaponBoltPistol = Registry.addWeapon("Bolt Pistol", "Pistol", 1, "1D6", 0, 6, [ruleOffhand]);
-// const weaponLasPistol = Registry.addWeapon("Las Pistol", "Pistol", 1, "1D6", 0, 6, [ruleOffhand]);
-// const weaponGravPistol = Registry.addWeapon("Grav Pistol", "Pistol", 1, "1D6", 0, 6, [ruleGravgun]);
-const weaponPlasmaPistol = Registry.addWeapon("Plasma Pistol", "Pistol", 1, "3D6", 1, 6, [ruleOverwatch, ruleOverheats]);
-const weaponGrenade = Registry.addWeapon("Grenade", "Grenade", 1, "1D6", 0, 12, [ruleAreaOfEffect]);
-// const weaponPlasmaGrenade = Registry.addWeapon("Plasma Grenade", "Grenade", 1, "2D6", 3, 12, [ruleAreaOfEffect]);
-const weaponPlagueBomb = Registry.addWeapon("Plague Bomb", "Grenade", 1, "1D6", 1, 12, [ruleAreaOfEffect, rulePersistentEffect, rulePlagueWeapon]);
-// const weaponFireBomb = Registry.addWeapon("Fire Bomb", "Grenade", 1, "1D6", 1, 12, [ruleAreaOfEffect, rulePersistentEffect, ruleFlameBased]);
+const weaponSmallArms = Registry.addWeapon("Small Arms", "Various guns", "Basic", 2, "1D6", 0, null, [ruleOverwatch]);
+const weaponBolter = Registry.addWeapon("Bolter", "", "Basic", 1, "2D6", 0, null, [ruleOverwatch, ruleSustainedFire]);
+const weaponLasgun = Registry.addWeapon("Lasgun", "", "Basic", 1, "1D6", 0, null, [ruleOverwatch, ruleHotShot]);
+// const weaponSpecialIssueLasgun = Registry.addWeapon("Special Issue Lasgun", "", "Basic", 1, "1D6", 2, null, []);
+const weaponFlamer = Registry.addWeapon("Flamer", "", "Special", 2, "1D6", 2, null, [ruleAreaOfEffect, rulePersistentEffect, ruleFlameBased]);
+// const weaponSniperRifle = Registry.addWeapon("Sniper Rifle", "", "Special", 2, "2D6", 0, null, [ruleSteadyAim]);
+const weaponPlasmaGun = Registry.addWeapon("Plasma Gun", "", "Special", 1, "3D6", 1, null, [ruleOverheats, ruleOverload]);
+// const weaponGravGun = Registry.addWeapon("Grav Gun", "", "Special", 1, "2D6", 0, null, [ruleGravgun]);
+const weaponMelta = Registry.addWeapon("Melta Gun", "", "Special", 2, "2D6", 2, 8, [ruleDoorbuster]);
+// const weaponAssaultCannon = Registry.addWeapon("Assault Cannon", "", "Special", 1, "3D6", 0, null, [ruleSustainedFire]);
+// const weaponBoltPistol = Registry.addWeapon("Bolt Pistol", "", "Pistol", 1, "1D6", 0, 6, [ruleOffhand]);
+// const weaponLasPistol = Registry.addWeapon("Las Pistol", "", "Pistol", 1, "1D6", 0, 6, [ruleOffhand]);
+// const weaponGravPistol = Registry.addWeapon("Grav Pistol", "", "Pistol", 1, "1D6", 0, 6, [ruleGravgun]);
+const weaponPlasmaPistol = Registry.addWeapon("Plasma Pistol", "", "Pistol", 1, "3D6", 1, 6, [ruleOverwatch, ruleOverheats]);
+const weaponGrenade = Registry.addWeapon("Frag Grenade", "", "Grenade", 1, "1D6", 0, 12, [ruleAreaOfEffect]);
+// const weaponPlasmaGrenade = Registry.addWeapon("Plasma Grenade", "", "Grenade", 1, "2D6", 3, 12, [ruleAreaOfEffect]);
+const weaponPlagueBomb = Registry.addWeapon("Plague Bomb", "", "Grenade", 1, "1D6", 1, 12, [ruleAreaOfEffect, rulePersistentEffect, rulePlagueWeapon]);
+// const weaponFireBomb = Registry.addWeapon("Fire Bomb", "", "Grenade", 1, "1D6", 1, 12, [ruleAreaOfEffect, rulePersistentEffect, ruleFlameBased]);
 
-// const npcHenchman = Registry.addNpc("Henchman", "Grunt", "Generic", 4, "1D6-2", [weaponSmallArms], [ruleUnarmored]);
-// const npcHenchmanMelee = Registry.addNpc("Henchman (melee)", "Grunt", "Generic", 4, "1D6-1", [weaponLasPistol], [ruleUnarmored]);
-// const npcRobot = Registry.addNpc("Robot", "Character", "Generic", 4, "2D6", [weaponAssaultCannon], [ruleBulky]);
-// const npcStormTrooper = Registry.addNpc("Storm Trooper", "Grunt", "Generic", 4, "1D6-1", [weaponSpecialIssueLasgun, weaponGrenade], [ruleFlakArmour]);
-// const npcStormTrooperSarg = Registry.addNpc("Storm Trooper Sergeant", "Grunt", "Generic", 4, "1D6", [weaponBolter, weaponPlasmaPistol, weaponGrenade], [ruleFlakArmour]);
-// const npcAssassin = Registry.addNpc("Assassin", "Specialist", "Generic", 4, "1D6-1", [weaponSniperRifle, weaponLasPistol], [ruleUnarmored]);
-const npcPurestrain = Registry.addNpc("Purestrain", "Grunt", factionGenestealer, 6, "3D6", [], [ruleBulky]);
-const npcAbberant = Registry.addNpc("Abberant", "Heavy", factionGenestealer, 4, "2D6", [], [ruleBulky,ruleThickSkin]);
-const npcAcolyte = Registry.addNpc("Acolyte", "Grunt", factionGenestealer, 4, "2D6-1", [weaponSmallArms], [ruleBulky, ruleFlakArmour]);
-const npcNeophyte = Registry.addNpc("Neophyte", "Grunt", factionGenestealer, 4, "1D6-2", [weaponSmallArms], [ruleUnarmored]);
-const npcPatriarch = Registry.addNpc("Patriarch", "Boss", factionGenestealer, 6, "3D6", [], [ruleBulky, ruleHeavyBlow, ruleHardToKill]);
-const npcPlagueZombie = Registry.addNpc("Plague Zombie", "Grunt", factionNurgle, 3, "1D6-2", [], [ruleWeaknessFire]);
-const npcPlagueMarine = Registry.addNpc("Plague Marine", "Heavy", factionNurgle, 4, "2D6", [weaponBolter, weaponPlagueBomb], [ruleBulky, ruleThickSkin]);
-// const npcChaosCultist = Registry.addNpc("Cultist", "Grunt", "Chaos", 4, "1D6-2", [Lasgun], [ruleUnarmored]);
-// const npcChaosCultistMelee = Registry.addNpc("Cultist (melee)", "Grunt", "Chaos", 4, "1D6-1", [weaponLasPistol], [ruleUnarmored]);
-// const npcChaosCultistFlamer = Registry.addNpc("Cultist (flamer)", "Specialist", "Chaos", 4, "1D6-3", [weaponLasPistol, weaponFlamer], [ruleUnarmored]);
-// const npcChaosMarine = Registry.addNpc("Chaos Marine", "Specialist", "Chaos", 4, "1D6", [weaponBolter, weaponGrenade], []);
-// const npcGuardsman = Registry.addNpc("Guardsman", "Grunt", "Imperial", 4, "1D6-2", [weaponLasgun, weaponGrenade], [ruleUnarmored]);
-// const npcStormtrooper = Registry.addNpc("Stormtrooper", "Grunt", "Imperial", 4, "1D6-1", [weaponLasgun, weaponGrenade], [ruleFlakArmour]);
-// const npcStormtrooperSarg = Registry.addNpc("Stormtrooper Sergeant", "Grunt", "Imperial", 4, "1D6", [weaponPlasmaPistol, weaponBolter, weaponGrenade], [ruleFlakArmour]);
-// const npcSpaceMarine = Registry.addNpc("Space Marine", "Heavy", "Imperial", 4, "1D6", [weaponBolter, weaponGrenade], [ruleBulky]);
-// const npcSpaceMarineVeteran = Registry.addNpc("Space Marine Veteran", "Heavy", "Imperial", 4, "2D6", [weaponBolter, weaponGrenade], [ruleBulky]);
-// const npcSpaceMarineSergeant = Registry.addNpc("Space Marine Sergeant", "Heavy", "Imperial", 4, "2D6+1", [weaponBolter, weaponGrenade], [ruleBulky]);
+// const npcHenchman = Registry.addNpc("Henchman", "", "Grunt", "Generic", 4, "1D6-2", [weaponSmallArms], [ruleUnarmored]);
+// const npcHenchmanMelee = Registry.addNpc("Henchman (melee)", "", "Grunt", "Generic", 4, "1D6-1", [weaponLasPistol], [ruleUnarmored]);
+// const npcRobot = Registry.addNpc("Robot", "", "Character", "Generic", 4, "2D6", [weaponAssaultCannon], [ruleBulky]);
+// const npcStormTrooper = Registry.addNpc("Storm Trooper", "", "Grunt", "Generic", 4, "1D6-1", [weaponSpecialIssueLasgun, weaponGrenade], [ruleFlakArmour]);
+// const npcStormTrooperSarg = Registry.addNpc("Storm Trooper Sergeant", "", "Grunt", "Generic", 4, "1D6", [weaponBolter, weaponPlasmaPistol, weaponGrenade], [ruleFlakArmour]);
+// const npcAssassin = Registry.addNpc("Assassin", "", "Specialist", "Generic", 4, "1D6-1", [weaponSniperRifle, weaponLasPistol], [ruleUnarmored]);
+const npcPurestrain = Registry.addNpc("Purestrain", "A hunched, mutlilimbed organism found creeping aboard floating space hulks. They can live for over 100 years, survive lengthy exposure to the void of space and have thick armoured carapaces Atop all this their tongue doubls as an ovipositor, infecting other organisms to do their bidding. They are fast, strong and intelligent.", "Grunt", factionGenestealer, 6, "3D6", [], [ruleBulky]);
+const npcAbberant = Registry.addNpc("Abberant", "A hulking mutated Genestealer hybrid. Not part of the regular reproduction cycle of Genestealers. Their thick skin and general resilience makes them hard to kill. Their superhuman strength makes them challenging fighters and they are often favoured by the Patriarch.", "Heavy", factionGenestealer, 4, "2D6", [], [ruleBulky,ruleThickSkin]);
+const npcAcolyte = Registry.addNpc("Acolyte", "A first or second generaration genestealer hybrid. They can have 2 to 4 arms. Generally they have sub human intelligence but can still operate weapons and machinery. They single minded and robust, needing fairly little sustainable and able to withstand great hardships.", "Grunt", factionGenestealer, 4, "2D6-1", [weaponSmallArms], [ruleBulky, ruleFlakArmour]);
+const npcNeophyte = Registry.addNpc("Neophyte", "A third or fourth generation genestealer hybrid. These can commonly pass for uninfected humans, generally possess a better than human intelligence and a higher than average psychic ability. Often they will be tasked with occupying positions of power in human hierarchies or passing as humans for infiltration or to avoid suspicion.", "Grunt", factionGenestealer, 4, "1D6-2", [weaponSmallArms], [ruleUnarmored]);
+const npcPatriarch = Registry.addNpc("Patriarch", "A gigantic elder Genestealer. It's thick armour and general physiology make it very hard to kill and it's talons can easily cut through metal. With a psychic link to their brood are potent Psykers and cunning strategists.", "Boss", factionGenestealer, 6, "3D6", [], [ruleBulky, ruleHeavyBlow, ruleHardToKill]);
+const npcPlagueZombie = Registry.addNpc("Plague Zombie", "A shambling victim of Nurgle's gifts. Slow but hard to kill, a threat in large numbers.", "Grunt", factionNurgle, 3, "1D6-2", [], [ruleWeaknessFire]);
+const npcPlagueBearer = Registry.addNpc("Plague Bearer", "A foetid lesser daemon of Nurgle. ", "Grunt", factionNurgle, 4, "1D6", [], [ruleDaemon, rulePlagueWeapons]);
+const npcPlagueMarine = Registry.addNpc("Plague Marine", "A bloated Chaos Space Marine blessed by Nurgle. Hard to kill, considered a threat.", "Heavy", factionNurgle, 4, "1D6", [weaponBolter, weaponPlagueBomb], [ruleBulky, rulePlagueWeapons, ruleThickSkin]);
+// const npcChaosCultist = Registry.addNpc("Cultist", "", "Grunt", "Chaos", 4, "1D6-2", [Lasgun], [ruleUnarmored]);
+// const npcChaosCultistMelee = Registry.addNpc("Cultist (melee)", "", "Grunt", "Chaos", 4, "1D6-1", [weaponLasPistol], [ruleUnarmored]);
+// const npcChaosCultistFlamer = Registry.addNpc("Cultist (flamer)", "", "Specialist", "Chaos", 4, "1D6-3", [weaponLasPistol, weaponFlamer], [ruleUnarmored]);
+// const npcChaosMarine = Registry.addNpc("Chaos Marine", "", "Specialist", "Chaos", 4, "1D6", [weaponBolter, weaponGrenade], []);
+// const npcGuardsman = Registry.addNpc("Guardsman", "", "Grunt", "Imperial", 4, "1D6-2", [weaponLasgun, weaponGrenade], [ruleUnarmored]);
+// const npcStormtrooper = Registry.addNpc("Stormtrooper", "", "Grunt", "Imperial", 4, "1D6-1", [weaponLasgun, weaponGrenade], [ruleFlakArmour]);
+// const npcStormtrooperSarg = Registry.addNpc("Stormtrooper Sergeant", "", "Grunt", "Imperial", 4, "1D6", [weaponPlasmaPistol, weaponBolter, weaponGrenade], [ruleFlakArmour]);
+// const npcSpaceMarine = Registry.addNpc("Space Marine", "", "Heavy", "Imperial", 4, "1D6", [weaponBolter, weaponGrenade], [ruleBulky]);
+// const npcSpaceMarineVeteran = Registry.addNpc("Space Marine Veteran", "", "Heavy", "Imperial", 4, "2D6", [weaponBolter, weaponGrenade], [ruleBulky]);
+// const npcSpaceMarineSergeant = Registry.addNpc("Space Marine Sergeant", "", "Heavy", "Imperial", 4, "2D6+1", [weaponBolter, weaponGrenade], [ruleBulky]);
 
-const npcChaosSpawn = Registry.addNpc("Chaos Spawn", "Heavy", "Chaos", 5, "3D6", [], [ruleBulky, ruleFeelNoPain3]);
+const npcChaosSpawn = Registry.addNpc("Chaos Spawn", "", "Heavy", "Chaos", 5, "3D6", [], [ruleBulky, ruleFeelNoPain3]);
 
 
 

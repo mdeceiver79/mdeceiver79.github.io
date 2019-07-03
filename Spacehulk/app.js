@@ -46,6 +46,10 @@ app.config(function($stateProvider, $sceProvider) {
 		name: 'npcs',
 		url: '/npcs'
 	}
+	var npc = {
+		name: 'npc',
+		url: '/npc/:id'
+	}
 	var rules = {
 		name: 'rules',
 		url: '/rules'
@@ -81,6 +85,7 @@ app.config(function($stateProvider, $sceProvider) {
   $stateProvider.state(faction);
   $stateProvider.state(squadCreator);
   $stateProvider.state(npcs);
+  $stateProvider.state(npc);
   $stateProvider.state(links);
 });
 
@@ -158,11 +163,11 @@ app.controller("RegistryController", ["$scope", "$stateParams", "$state", functi
 	$scope.$stateParams = $stateParams;
 	$scope.$watch("$stateParams.id", function() {
 		if ( Registry[$state.current.name] && Registry[$state.current.name][$stateParams.id] ) {
+			$scope.subject = null;
 			$scope.subject = Registry[$state.current.name][$stateParams.id];
 		} else {
 			$scope.subject = null;
 		}
-		console.log("$scope.subject", $scope.subject);
 	});
 	$scope.subject = null;
 }]);
