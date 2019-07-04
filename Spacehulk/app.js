@@ -101,9 +101,6 @@ app.controller("PageController", ["$scope", "$state", function($scope, $state) {
 	$scope.objects = Registry.objects;
 	$scope.items = Registry.items;
 	$scope.npcs = Registry.npcs;
-	$scope.npcs.forEach((npc) => {
-		npc.$starred = false;
-	});
 	$scope.factions = Registry.factions;
 }]);
 
@@ -183,18 +180,15 @@ app.controller("NpcsController", ["$scope", function($scope) {
 
 	$scope.layout = "table";
 	$scope.filter = "";
-	$scope.sortBy = "faction";
+	$scope.sortBy = "";
 	$scope.sortByReverse = false;
-	$scope.sortByStar = () => {
-		$scope.sortBy = "$starred";
-		$scope.sortByReverse = true;
-	}
 	$scope.changeSort = (sortby) => {
 		if ($scope.sortBy === sortby) {
 			if (!$scope.sortByReverse) {
 				$scope.sortByReverse = true;
 			} else {
-				$scope.sortByStar();
+				$scope.sortBy = "";
+				$scope.sortByReverse = false;
 			}
 		} else {
 			$scope.sortBy = sortby;
