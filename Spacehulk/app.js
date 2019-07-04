@@ -70,6 +70,10 @@ app.config(function($stateProvider, $sceProvider) {
 		name: 'links',
 		url: '/links'
 	}
+	var about = {
+		name: 'about',
+		url: '/about'
+	}
   $stateProvider.state(portal);
   $stateProvider.state(weapons);
   $stateProvider.state(weapon);
@@ -87,6 +91,7 @@ app.config(function($stateProvider, $sceProvider) {
   $stateProvider.state(npcs);
   $stateProvider.state(npc);
   $stateProvider.state(links);
+  $stateProvider.state(about);
 });
 
 app.controller("PageController", ["$scope", "$state", function($scope, $state) {
@@ -99,6 +104,7 @@ app.controller("PageController", ["$scope", "$state", function($scope, $state) {
 	$scope.npcs.forEach((npc) => {
 		npc.$starred = false;
 	});
+	$scope.factions = Registry.factions;
 }]);
 
 app.directive("ngWeapon", function() {
@@ -173,6 +179,8 @@ app.controller("RegistryController", ["$scope", "$stateParams", "$state", functi
 }]);
 
 app.controller("NpcsController", ["$scope", function($scope) {
+	$scope.faction = "All";
+
 	$scope.layout = "table";
 	$scope.filter = "";
 	$scope.sortBy = "faction";

@@ -56,7 +56,6 @@
 			You need to enable JavaScript to run this app.
 		</noscript>
 		<div ng-controller="PageController">
-			{{$state}}
 			<div ng-if="loading" style="position:fixed;left:0;right:0;top:0;bottom:0;background:#e9ecef;z-index:100000;">
 				<!--<div style="position:relative; top:40%;left:50%">
 					<h3 style="position:relative;width:160px;left:-80px;text-align:center;">Loading...</h3>
@@ -90,7 +89,7 @@
 					</li>
 				</ul>
 			</nav>
-			<div ng-show="$state.current.name == 'portal'">
+			<div ng-show="$state.current.name == 'portal' || $state.current.name == ''">
 				<div class="jumbotron">
 					<div class="custom-fluid-wrapper">
 						<h1 class="display-3">Spacehulk</h1>
@@ -216,7 +215,7 @@
 						</th>
 						<th>
 							<a class="unstyled-link" ng-click="changeSort('consumable')">
-								Consumable
+								Type
 								<span class="fa fa-sort-asc" ng-show="sortBy === 'consumable' && sortByReverse === true"></span>
 								<span class="fa fa-sort-desc" ng-show="sortBy === 'consumable' && sortByReverse === false"></span>
 								<span class="fa fa-sort" ng-show="sortBy !== 'consumable'"></span>
@@ -233,7 +232,7 @@
 					</tr>
 					<tr ng-repeat="item in items | orderBy : sortBy : sortByReverse">
 						<td><a ui-sref="item({ id: item.name })">{{item.name}}</a></td>
-						<td>{{item.consumable}}</td>
+						<td>{{ item.consumable ? 'Consumable' : 'Passive'}}</td>
 						<td><span ng-contextual-link="item.description"></span></td>
 					</tr>
 				</table>
@@ -285,11 +284,21 @@
 				<br>
 				<br>
 				<form>
-					<div class="form-group">
-						<label>Filter</label>
-						<input type="text" class="form-control" placeholder="Search term" ng-model="filter">
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label>Faction</label>
+							<select ng-model="faction" class="form-control">
+								<option ng-selected="selected">All</option>
+								<option ng-repeat="faction in factions">{{faction.name}}</option>
+							</select>
+						</div>
+						<div class="form-group col-md-6">
+							<label>Filter</label>
+							<input type="text" class="form-control" placeholder="Search term" ng-model="filter">
+						</div>
 					</div>
 				</form>
+				<br>
 				<table class="table table-striped table-hover" ng-show="layout == 'table'">
 					<tr>
 						<th>
@@ -359,7 +368,7 @@
 							</a>
 						</th>
 					</tr>
-					<tr ng-repeat="npc in npcs | orderBy : sortBy : sortByReverse | filter : filter">
+					<tr ng-repeat="npc in npcs | orderBy : sortBy : sortByReverse | filter : filter" ng-show="faction == npc.faction.name || faction == 'All'">
 						<td>
 							<a class="unstyled-link" ng-click="npc.$starred = !npc.$starred" >
 								<span class="fa fa-star" ng-class="{'text-warning':npc.$starred, 'text-secondary':!npc.$starred}"></span>
@@ -398,6 +407,7 @@
 				<a href="http://spacehulk.barsoom.cc/ressurected/shbible/Space_Hulk_Bible_1st_edtion.pdf">http://spacehulk.barsoom.cc/ressurected/shbible/Space_Hulk_Bible_1st_edtion.pdf</a>
 				<a href="http://spacehulk.barsoom.cc/ressurected/eth/Marines.html">http://spacehulk.barsoom.cc/ressurected/eth/Marines.html</a>
 				<a href="https://boardgamegeek.com/thread/1540262/deathwatch-hybrids-space-hulk">https://boardgamegeek.com/thread/1540262/deathwatch-hybrids-space-hulk</a>
+				<a href="http://www.fillinsheets.com/pdfs/DarkHeresy/Dark%20Heresy%20Creatures%20Anathema.pdf">http://www.fillinsheets.com/pdfs/DarkHeresy/Dark%20Heresy%20Creatures%20Anathema.pdf</a>
 			</div>
 			
 			<div class="container custom-fluid-wrapper" ng-if="$state.current.name == 'weapon'" ng-controller="RegistryController">
@@ -409,7 +419,7 @@
 						<span ng-contextual-link="subject.description"></span>
 					</div>
 					<div class="col-md-4 col-lg-6">Type : {{subject.type}}</div>
-					<div class="col-md-4 col-lg-6">Cost to Fire: {{subject.apCost}}AP</div>
+					<div class="col-md-4 col-lg-6">Cost to Fire: {{subject.apCost}} AP</div>
 					<div class="col-md-4 col-lg-6">Hit Dice: {{subject.dice}}</div>
 					<div class="col-md-4 col-lg-6">To hit: {{6-subject.modifier}}+</div>
 					<div class="col-md-4 col-lg-6" ng-show="subject.range">Range: {{subject.range}}</div>
@@ -432,7 +442,7 @@
 				<br>
 				<div class="row">
 					<div class="col-lg-12">
-						<span ng-contextual-link="subject.description"></span>
+						<span ng-contextual-link="subject.description"></span><br><br>
 					</div>
 					<div class="col-md-4 col-lg-6">Faction : <a ui-sref="faction({id:subject.faction.name})">{{subject.faction.name}}</a></div>
 					<div class="col-md-4 col-lg-6">Type: {{subject.type}}</div>
@@ -466,7 +476,7 @@
 			<div class="container custom-fluid-wrapper" ng-if="$state.current.name == 'item'" ng-controller="RegistryController">
 				<br>
 				<h2>{{subject.name}}</h2>
-				<h6 ng-show="subject.consumable">(Consumable)</h6>
+				<h6>({{subject.consumable ? "Consumable" : "Passive"}})</h6>
 				<br>
 				<span ng-contextual-link="subject.description"></span>
 				<br>
