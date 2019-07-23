@@ -210,7 +210,11 @@ app.directive("ngContextualLink", function($compile) {
 					if (index % 2 == 0) return formattedContent.push(phrase); // we don't care about the evens
 					// so now we're dealing with the contexted things
 					var phraseParts = phrase.split(":");
-					formattedContent.push("<a ui-sref=\""+phraseParts[0]+"({id:'"+phraseParts[1]+"'})\">"+phraseParts[1]+"</a>");
+					var state = phraseParts[0];
+					var identifier = phraseParts[1];
+					var text = phraseParts[2] || phraseParts[1];
+					
+					formattedContent.push("<a ui-sref=\""+state+"({id:'"+identifier+"'})\">"+text+"</a>");
 				});
 				element[0].innerHTML = formattedContent.join("");
 				$compile(element.contents())($scope);
